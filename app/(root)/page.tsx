@@ -1,9 +1,12 @@
 import HeaderBox from '@/components/HeaderBox'
 import RightSideBar from '@/components/RightSideBar'
 import TotalBalanceBox from '@/components/TotalBalanceBox'
+import { getLoggedInUser } from '@/lib/actions/user.actions'
+import { redirect } from 'next/navigation'
 
-const page = () => {
-  const loggedIn={firstName:"Karthik",lastName:"Vanam",email:"vankarnet@gmail.com"}
+const page = async () => {
+  const loggedIn=await getLoggedInUser();
+  if(!loggedIn) redirect('/sign-in')
   return (
     <section className='home'>
       <div className='home-content'>
@@ -12,7 +15,7 @@ const page = () => {
             type="greeting"
             title="Welcome"
             subtext="Access and manage your account and transactions efficiently"
-            user={loggedIn?.firstName || "Guest"}
+            user={loggedIn?.name || "Guest"}
           />
           <TotalBalanceBox
             accounts={[]}

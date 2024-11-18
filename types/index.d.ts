@@ -8,14 +8,14 @@ declare type SearchParamProps = {
 // ========================================
 
 declare type SignUpParams = {
-  firstName: string;
-  lastName: string;
-  address1: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  dateOfBirth: string;
-  ssn: string;
+  firstName?: string;
+  lastName?: string;
+  address1?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  dateOfBirth?: string;
+  ssn?: string;
   email: string;
   password: string;
 };
@@ -157,7 +157,7 @@ declare interface HeaderBoxProps {
 }
 
 declare interface MobileNavProps {
-  user: User;
+  user: User<Preferences>;
 }
 
 declare interface PageHeaderProps {
@@ -215,13 +215,13 @@ declare interface FooterProps {
 }
 
 declare interface RightSidebarProps {
-  user: User;
+  user: User<Preferences>;
   transactions: Transaction[];
   banks: Bank[] & Account[];
 }
 
 declare interface SiderbarProps {
-  user: User;
+  user: User<Preferences>;
 }
 
 declare interface RecentTransactionsProps {
