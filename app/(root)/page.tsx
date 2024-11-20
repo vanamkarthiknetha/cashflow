@@ -1,12 +1,20 @@
 import HeaderBox from '@/components/HeaderBox'
+import RecentTransactions from '@/components/RecentTransactions'
 import RightSideBar from '@/components/RightSideBar'
 import TotalBalanceBox from '@/components/TotalBalanceBox'
+import { getAccount, getAccounts } from '@/lib/actions/bank.actions'
 import { getLoggedInUser } from '@/lib/actions/user.actions'
 import { redirect } from 'next/navigation'
 
-const page = async () => {
+const page = async ({searchParams :{id,page}}:SearchParamProps) => {
+  const currentPage = Number(page as string) || 1
   const loggedIn=await getLoggedInUser();
   if(!loggedIn) redirect('/sign-in')
+  const accounts = await getAccounts({userId:loggedIn.$id})
+  if(!accounts) return ; // i think return to connect bank page
+
+  const appwriteItemId = id as string || accounts?.data[0]?.appwriteItemId
+  const account = await getAccount({appwriteItemId})
   return (
     <section className='home'>
       <div className='home-content'>
@@ -15,17 +23,17 @@ const page = async () => {
             type="greeting"
             title="Welcome"
             subtext="Access and manage your account and transactions efficiently"
-            user={loggedIn?.name || "Guest"}
+            user={loggedIn?.firstName || "Guest"}
           />
           <TotalBalanceBox
-            accounts={[]}
-            totalBanks={1}
-            totalCurrentBalance={1230.70}
+            accounts={accounts?.data}
+            totalBanks={accounts?.totalBanks}
+            totalCurrentBalance={accounts?.totalCurrentBalance}
           />
         </header>
-        {/* RECENT TXNS */}
+        <RecentTransactions accounts={accounts?.data} transactions={account?.transactions} appwriteItemId={appwriteItemId} page = {currentPage}/>
       </div>
-        <RightSideBar user={loggedIn} transactions={[]} banks ={[{},{}]}/>
+        <RightSideBar user={loggedIn} transactions={accounts?.data.transactions} banks ={accounts?.data.slice(0,2)}/>
     </section>
   )
 }

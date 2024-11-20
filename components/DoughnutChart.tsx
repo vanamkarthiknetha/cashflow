@@ -5,20 +5,23 @@ Chart.register(ArcElement,Tooltip);
 import { Doughnut } from 'react-chartjs-2';
 
 const DoughnutChart = ({accounts}:DoughnutChartProps) => {
+  function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+  const labels = accounts.map((account)=>account?.name)
+  const currentBalances = accounts.map((account)=>account?.currentBalance)
+  const backgroundColors = accounts.map(()=>getRandomColor())
     const data = {
-        labels: [
-          'bank1',
-          'bank2',
-          'bank3'
-        ],
+        labels,
         datasets: [{
           label: 'Banks',
-          data: [300, 50, 100],
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)'
-          ],
+          data:currentBalances,
+          backgroundColor:backgroundColors,
           hoverOffset: 4,
           cutout:'60%'
         }]

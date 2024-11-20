@@ -174,7 +174,7 @@ declare interface PaginationProps {
 
 declare interface PlaidLinkProps {
   user: User;
-  variant?: "primary" | "ghost";
+  variant?: "primary" | "ghost" ;
   dwollaCustomerId?: string;
 }
 
@@ -220,7 +220,7 @@ declare interface RightSidebarProps {
 }
 
 declare interface SiderbarProps {
-  user: User<Preferences>;
+  user: User;
 }
 
 declare interface RecentTransactionsProps {
