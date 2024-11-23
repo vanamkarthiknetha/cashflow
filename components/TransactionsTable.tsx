@@ -1,7 +1,6 @@
 import {
     Table,
     TableBody,
-    
     TableCell,
     TableHead,
     TableHeader,
@@ -9,7 +8,6 @@ import {
   } from "@/components/ui/table"
   import { transactionCategoryStyles } from "@/constants"
   import { cn, formatAmount, formatDateTime, getTransactionStatus, removeSpecialCharacters } from "@/lib/utils"
-  
   const CategoryBadge = ({ category }: CategoryBadgeProps) => {
     const {
       borderColor,
@@ -27,6 +25,7 @@ import {
   } 
   
   const TransactionsTable = ({ transactions }: TransactionTableProps) => {
+  
     return (
       <Table>
         <TableHeader className="bg-[#f9fafb]">
@@ -36,7 +35,7 @@ import {
             <TableHead className="px-2">Status</TableHead>
             <TableHead className="px-2">Date</TableHead>
             <TableHead className="px-2 ">Channel</TableHead>
-            <TableHead className="px-2 max-md:hidden">Category</TableHead>
+            <TableHead className="px-2 ">Category</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -77,7 +76,7 @@ import {
                  {t.paymentChannel}
                 </TableCell>
   
-                <TableCell className="pl-2 pr-10 max-md:hidden">
+                <TableCell className="pl-2 pr-10 ">
                  <CategoryBadge category={t.category} /> 
                 </TableCell>
               </TableRow>

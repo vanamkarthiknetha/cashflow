@@ -2,7 +2,7 @@
 
 declare type SearchParamProps = {
   params: { [key: string]: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 // ========================================
@@ -59,7 +59,7 @@ declare type Account = {
   type: string;
   subtype: string;
   appwriteItemId: string;
-  shareableId: string;
+  sharableId: string;
 };
 
 declare type Transaction = {
@@ -88,7 +88,7 @@ declare type Bank = {
   accessToken: string;
   fundingSourceUrl: string;
   userId: string;
-  shareableId: string;
+  sharableId: string;
 };
 
 declare type AccountTypes =
@@ -156,7 +156,7 @@ declare interface HeaderBoxProps {
 }
 
 declare interface MobileNavProps {
-  user: User<Preferences>;
+  user: User;
 }
 
 declare interface PageHeaderProps {

@@ -6,7 +6,9 @@ import { getAccount, getAccounts } from '@/lib/actions/bank.actions'
 import { getLoggedInUser } from '@/lib/actions/user.actions'
 import { redirect } from 'next/navigation'
 
-const page = async ({searchParams :{id,page}}:SearchParamProps) => {
+const page = async ({searchParams }:SearchParamProps) => {
+
+  const {id,page} =await searchParams
   const currentPage = Number(page as string) || 1
   const loggedIn=await getLoggedInUser();
   if(!loggedIn) redirect('/sign-in')
@@ -32,8 +34,9 @@ const page = async ({searchParams :{id,page}}:SearchParamProps) => {
           />
         </header>
         <RecentTransactions accounts={accounts?.data} transactions={account?.transactions} appwriteItemId={appwriteItemId} page = {currentPage}/>
+        
       </div>
-        <RightSideBar user={loggedIn} transactions={accounts?.data.transactions} banks ={accounts?.data.slice(0,2)}/>
+        <RightSideBar user={loggedIn} transactions={account?.transactions} banks ={accounts?.data.slice(0,2)}/>
     </section>
   )
 }
