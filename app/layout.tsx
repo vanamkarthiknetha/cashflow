@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 import type { Metadata } from "next";
 import {Inter,IBM_Plex_Serif} from "next/font/google";
 import "./globals.css";
-
+import { Toaster } from "@/components/ui/sonner"
 const inter = Inter({
   subsets:["latin"],
   variable: "--font-inter",
@@ -31,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${IBMPlexSerif.variable} `}
       >
+        <Toaster />
         {children}
       </body>
     </html>

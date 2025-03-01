@@ -30,7 +30,7 @@ const RightSideBar = ({user,transactions,banks}:RightSidebarProps) => {
           <section className="banks">
             <div className="flex w-full justify-between">
               <h2 className="header-2">My Banks</h2>
-              <Link href="/" className="flex gap-2">
+              <Link href="/connect-bank" className="flex gap-2">
                 <Image
                    src="/icons/plus.svg"
                   width={20}

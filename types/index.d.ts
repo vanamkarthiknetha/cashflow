@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 declare type SearchParamProps = {
-  params: { [key: string]: string };
+  params?: { [key: string]: string };
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
@@ -170,6 +170,7 @@ declare interface PageHeaderProps {
 declare interface PaginationProps {
   page: number;
   totalPages: number;
+  setIsLoading?:any
 }
 
 declare interface PlaidLinkProps {

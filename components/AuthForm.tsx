@@ -2,7 +2,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -14,6 +13,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/actions/user.actions";
 import PlaidLink from "./PlaidLink";
+import { toast } from "sonner";
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const [domLoaded, setDomLoaded] = useState(false);
@@ -41,16 +41,24 @@ const AuthForm = ({ type }: AuthFormProps) => {
       ssn: "",
       email: "",
       password: "",
+      // firstName: "User",
+      // lastName: "Random",
+      // address1: "abc, xyz",
+      // city: "Hyderabad",
+      // state: "NY",
+      // postalCode: "12345",
+      // dateOfBirth: "2004-01-01",
+      // ssn: "1234",
+      // email: "test@gmail.com",
+      // password: "12345678",
     },
   });
 
   // 2. Define a submit handler.
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-
     try {
       // Sign up with Appwrite & create plaid token
-
       if (type === "sign-up") {
         const userData = {
           firstName: data.firstName!,
@@ -64,23 +72,54 @@ const AuthForm = ({ type }: AuthFormProps) => {
           email: data.email,
           password: data.password,
         };
-        const newUser = await signUp(userData);
-        setUser(newUser);
+        const response = await signUp(userData);
+        if(response.success){
+          setUser(response.user);
+        }else{
+          setIsLoading(false);
+          toast.error(response.message)
+        }
       }
-
       if (type === "sign-in") {
         const response = await signIn({
           email: data.email,
           password: data.password,
         });
-        if (response) router.push("/");
+        if (response.success) router.push("/");
+        else {
+          setIsLoading(false);
+          console.log(response.message)
+          toast.error(response.message)
+        }
       }
     } catch (error) {
-      console.log(error);
-    } finally {
       setIsLoading(false);
+      console.log(error);
+      
     }
   };
+  useEffect(()=>{
+    toast("Sign in with test@gmail.com / 12345678 to explore or create an account.",{
+      duration:10000,
+      style: {
+        fontSize:"15px"
+      },
+    });
+  },[])
+  useEffect(() => {
+    const handleComplete = () => setIsLoading(false);
+
+    if (isLoading) {
+      const interval = setInterval(() => {
+        if (window.location.pathname === "/") {
+          handleComplete();
+          clearInterval(interval);
+        }
+      }, 300); // Check every 300ms
+
+      return () => clearInterval(interval);
+    }
+  }, [isLoading]);
 
   return (
     domLoaded && (

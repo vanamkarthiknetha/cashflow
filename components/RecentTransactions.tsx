@@ -1,9 +1,13 @@
+"use client"
 import Link from 'next/link'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BankTabItem } from './BankTabItem'
 import BankInfo from './BankInfo'
 import TransactionsTable from './TransactionsTable'
 import { Pagination } from './Pagination'
+import { useEffect, useState } from "react";
+import Loading from "@/components/Loading";
+import { useSearchParams } from 'next/navigation'
 
 const RecentTransactions = ({
   accounts,
@@ -11,6 +15,14 @@ const RecentTransactions = ({
   appwriteItemId,
   page = 1,
 }: RecentTransactionsProps) => {
+
+  const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const sp =searchParams.toString()
+  useEffect(() => {
+    setIsLoading(false);
+  }, [sp]); 
+
   const rowsPerPage = 10;
   const totalPages = Math.ceil(transactions.length / rowsPerPage);
 
@@ -57,11 +69,15 @@ const RecentTransactions = ({
               appwriteItemId={appwriteItemId}
               type="full"
             />
-
-            <TransactionsTable transactions={currentTransactions} />
+            {/* ✅ Show Skeleton while loading */}
+            {isLoading ? (
+              <Loading type='transactions-table' />  // ✅ Placeholder skeleton
+            ) : (
+              <TransactionsTable transactions={currentTransactions} />
+            )}
             {totalPages > 1 && (
               <div className="my-4 w-full">
-                <Pagination totalPages={totalPages} page={page} />
+                <Pagination totalPages={totalPages} page={page} setIsLoading={setIsLoading}/>
               </div>
             )}
           </TabsContent>

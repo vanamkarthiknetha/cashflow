@@ -1,7 +1,7 @@
 "use server";
 
-import { ID, Query } from "node-appwrite";
-import { createAdminClient, createSessionClient } from "../appwrite";
+import { AppwriteException, ID, Query } from "node-appwrite";
+import { createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { cookies } from "next/headers";
 import { encryptId, extractCustomerIdFromUrl, parseStringify } from "../utils";
 import {
@@ -25,6 +25,7 @@ const {
 export const signIn = async ({ email, password }: signInProps) => {
   try {
     const { account } = await createAdminClient();
+
     const session = await account.createEmailPasswordSession(email, password);
     (await cookies()).set("appwrite-session", session.secret, {
       path: "/",
@@ -33,15 +34,25 @@ export const signIn = async ({ email, password }: signInProps) => {
       secure: true,
     });
     const user = await getUserInfo({userId:session.userId})
-    return parseStringify(user);
+    const response ={
+      success:true,
+      user:parseStringify(user),
+      message:"Loggedin successfully"
+    }
+    return response;
   } catch (error) {
-    console.error("Error", error);
+    if (error instanceof AppwriteException) {
+      console.error("Appwrite Login Error:", error.message);
+      return { success: false, message: error.message };
+    }
+    console.error("Error:", error);
+    return { success: false, message: "Internal server error." };
   }
 };
 export const signUp = async ({password,...userData}: SignUpParams) => {
   const { email, firstName, lastName } = userData;
   try {
-    const { account, database } = await createAdminClient();
+    const { account, database,user  } = await createAdminClient();
 
     const newUserAccount = await account.create(
       ID.unique(),
@@ -50,11 +61,18 @@ export const signUp = async ({password,...userData}: SignUpParams) => {
       firstName + lastName!
     );
     if (!newUserAccount) throw new Error("Error creating newUserAccount !");
-    const dwollaCustomerUrl = await createDwollaCustomer({
+    const dwollaResponse = await createDwollaCustomer({
       ...userData,
       type: "personal",
     });
-    if (!dwollaCustomerUrl) throw new Error("Error creating dwolla customer !");
+    if (!dwollaResponse.success){
+      await user.delete(newUserAccount.$id); // Delete user from Appwrite
+      return {
+        success:false,
+        message: dwollaResponse.error.body._embedded.errors[0].message
+      }
+    }
+    const dwollaCustomerUrl =  dwollaResponse.dwollaCustomerUrl
     const dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl);
 
     const newUser = await database.createDocument(
@@ -76,10 +94,32 @@ export const signUp = async ({password,...userData}: SignUpParams) => {
       sameSite: "strict",
       secure: true,
     });
-
-    return parseStringify(newUser);
+    const response = {
+      success:true,
+      user:parseStringify(newUser),
+      message:"SignedUp successfully"
+    }
+    return response;
   } catch (error) {
-    console.error("Error", error);
+    if (error instanceof AppwriteException) {
+      console.error("AppwriteException :", error);
+      return {
+        success: false,
+        message: error.message
+      };
+    }
+    if (error.message == "Error creating dwolla customer !") {
+      console.log("Object:",error._embedded)
+      return {
+        success: false,
+        message: error
+      };
+    }
+    console.error("Internal server error :", error);
+    return {
+      success:true,
+      message:"Internal server error"
+    }
   }
 };
 export const logoutAccount = async () => {
@@ -230,7 +270,6 @@ export const getBanks = async ({userId}:getBanksProps) => {
       BANK_COLLECTION_ID!,
       [Query.equal('userId',[userId])]
     );
-
     return parseStringify(banks.documents);
   } catch (error) {
     console.log("$ During getBanks $", error);

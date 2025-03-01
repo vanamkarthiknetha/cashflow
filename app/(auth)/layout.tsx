@@ -5,11 +5,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
- 
   return (
-    
     <main className="flex min-h-screen w-full justify-between font-inter">
-      {children}
+      <section className="flex-center size-full max-sm:px-6">
+        {children}
+      </section>
       <div className="auth-asset">
         <div>
           {/* <Image
@@ -22,4 +22,5 @@ export default async function RootLayout({
         </div>
       </div>
     </main>
-  )}
+  );
+}

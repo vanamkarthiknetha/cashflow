@@ -20,6 +20,7 @@ const config = {
     },
     extend: {
       colors: {
+        primary: "hsl(var(--primary))",
         fill: {
           1: "rgba(255, 255, 255, 0.10)",
         },
