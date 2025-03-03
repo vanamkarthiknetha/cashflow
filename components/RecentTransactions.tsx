@@ -53,6 +53,7 @@ const RecentTransactions = ({
                 key={account.id}
                 account={account}
                 appwriteItemId={appwriteItemId}
+                setIsLoading={setIsLoading}
               />
             </TabsTrigger>
           ))}

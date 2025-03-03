@@ -41,7 +41,8 @@ const SideBar = ({ user }: SiderbarProps) => {
                     </Link>)
                 })}
 
-                <PlaidLink user={user} />
+               {user && <PlaidLink user={user} />} {/*To avoid client side err on createLinkToken without login */}
+               
             </nav>
             <Footer user={user}/>
         </section>
