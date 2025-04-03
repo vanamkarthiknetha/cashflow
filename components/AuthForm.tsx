@@ -99,7 +99,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
     }
   };
   useEffect(()=>{
-    toast("Sign in with test@gmail.com / 12345678 to explore or create an account.",{
+    toast("Sign in with tester@gmail.com / 12345678 to explore or create an account.",{
       duration:20000,
       style: {
         fontSize:"15px"
