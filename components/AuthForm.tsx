@@ -98,14 +98,14 @@ const AuthForm = ({ type }: AuthFormProps) => {
       
     }
   };
-  useEffect(()=>{
-    toast("Sign in with tester@gmail.com / 12345678 to explore or create an account.",{
-      duration:20000,
-      style: {
-        fontSize:"15px"
-      },
-    });
-  },[])
+  // useEffect(()=>{
+  //   toast("Sign in with tester@gmail.com / 12345678 to explore or create an account.",{
+  //     duration:20000,
+  //     style: {
+  //       fontSize:"15px"
+  //     },
+  //   });
+  // },[])
   useEffect(() => {
     const handleComplete = () => setIsLoading(false);
 
